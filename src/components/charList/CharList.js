@@ -1,7 +1,6 @@
 import { Component } from 'react';
 
 import './charList.scss';
-import abyss from '../../resources/img/abyss.jpg';
 import Spinner from '../spinner/Spinner';
 import MarvelService from '../../services/MarvelService';
 
