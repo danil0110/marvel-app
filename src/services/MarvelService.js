@@ -28,7 +28,7 @@ class MarvelService {
     return {
       name: char.name,
       description: !char.description
-        ? 'There is no description about this character.'
+        ? 'There is no description for this character.'
         : char.description.length > 210
         ? char.description.slice(0, 210) + '...'
         : char.description,
