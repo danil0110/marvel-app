@@ -9,30 +9,86 @@ class CharList extends Component {
   state = {
     charList: [],
     loading: true,
+    newItemsLoading: false,
     error: false,
+    offset: 210,
+    isEnd: false,
   };
 
   marvelService = new MarvelService();
 
   componentDidMount() {
-    this.marvelService.getAllCharacters().then(this.onCharactersLoaded);
+    this.onRequest();
   }
 
-  onCharactersLoaded = (charList) => {
-    this.setState({ charList, loading: false, error: false });
+  onRequest = (offset) => {
+    this.onCharactersLoading();
+    this.marvelService.getAllCharacters(offset).then(this.onCharactersLoaded).catch(this.onError);
+  };
+
+  onCharactersLoading = () => {
+    this.setState({ newItemsLoading: true });
+  };
+
+  onCharactersLoaded = (newCharList) => {
+    this.setState(({ charList, offset }) => {
+      return {
+        charList: [...charList, ...newCharList],
+        loading: false,
+        newItemsLoading: false,
+        error: false,
+        offset: offset + 9,
+        isEnd: newCharList.length < 9 ? true : false,
+      };
+    });
   };
 
   onError = () => {
     this.state({ loading: false, error: true });
   };
 
+  renderItems = () => {
+    const { charList, newItemsLoading, offset, isEnd } = this.state;
+    const { onCharSelected } = this.props;
+
+    return (
+      <>
+        <ul className='char__grid'>
+          {charList.map((item) => {
+            const pathArr = item.thumbnail.split('/');
+            const imgStyle =
+              pathArr[pathArr.length - 1] === 'image_not_available.jpg'
+                ? { objectFit: 'fill' }
+                : null;
+
+            return (
+              <li className='char__item' key={item.id} onClick={() => onCharSelected(item.id)}>
+                <img style={imgStyle} src={item.thumbnail} alt={item.name} />
+                <div className='char__name'>{item.name}</div>
+              </li>
+            );
+          })}
+        </ul>
+        <button
+          className='button button__main button__long'
+          disabled={newItemsLoading}
+          onClick={() => this.onRequest(offset)}
+          style={{ display: isEnd ? 'none' : 'block' }}
+        >
+          <div className='inner'>load more</div>
+        </button>
+      </>
+    );
+  };
+
   render() {
-    const { charList, loading, error } = this.state;
+    const { loading, error } = this.state;
     const spinner = loading ? <Spinner /> : null;
     const errorMessage = error ? <ErrorMessage /> : null;
-    const content = !(loading || errorMessage) ? (
-      <View charList={charList} onCharSelected={this.props.onCharSelected} />
-    ) : null;
+    const content = !(loading || errorMessage)
+      ? // <View charList={charList} onCharSelected={this.props.onCharSelected} />
+        this.renderItems()
+      : null;
 
     return (
       <div className='char__list'>
@@ -44,30 +100,34 @@ class CharList extends Component {
   }
 }
 
-const View = ({ charList, onCharSelected }) => {
-  return (
-    <>
-      <ul className='char__grid'>
-        {charList.map((item) => {
-          const pathArr = item.thumbnail.split('/');
-          const imgStyle =
-            pathArr[pathArr.length - 1] === 'image_not_available.jpg'
-              ? { objectFit: 'fill' }
-              : null;
+// const View = ({ charList, onCharSelected }) => {
+//   return (
+//     <>
+//       <ul className='char__grid'>
+//         {charList.map((item) => {
+//           const pathArr = item.thumbnail.split('/');
+//           const imgStyle =
+//             pathArr[pathArr.length - 1] === 'image_not_available.jpg'
+//               ? { objectFit: 'fill' }
+//               : null;
 
-          return (
-            <li className='char__item' key={item.id} onClick={() => onCharSelected(item.id)}>
-              <img style={imgStyle} src={item.thumbnail} alt={item.name} />
-              <div className='char__name'>{item.name}</div>
-            </li>
-          );
-        })}
-      </ul>
-      <button className='button button__main button__long'>
-        <div className='inner'>load more</div>
-      </button>
-    </>
-  );
-};
+//           return (
+//             <li className='char__item' key={item.id} onClick={() => onCharSelected(item.id)}>
+//               <img style={imgStyle} src={item.thumbnail} alt={item.name} />
+//               <div className='char__name'>{item.name}</div>
+//             </li>
+//           );
+//         })}
+//       </ul>
+//       <button
+//         className='button button__main button__long'
+//         disabled={newItemsLoading}
+//         onClick={() => this.onRequest(offset)}
+//       >
+//         <div className='inner'>load more</div>
+//       </button>
+//     </>
+//   );
+// };
 
 export default CharList;
