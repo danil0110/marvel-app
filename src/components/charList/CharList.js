@@ -36,7 +36,7 @@ const View = ({ charList }) => {
           const pathArr = item.thumbnail.split('/');
           const style =
             pathArr[pathArr.length - 1] === 'image_not_available.jpg'
-              ? { objectFit: 'contain' }
+              ? { objectFit: 'fill' }
               : null;
 
           return (
