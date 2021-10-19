@@ -18,12 +18,12 @@ class RandomChar extends Component {
 
   componentDidMount() {
     this.updateChar();
-    this.timerId = setInterval(this.updateChar, 3000);
+    // this.timerId = setInterval(this.updateChar, 3000);
   }
 
-  componentWillUnmount() {
-    clearInterval(this.timerId);
-  }
+  // componentWillUnmount() {
+  //   clearInterval(this.timerId);
+  // }
 
   onCharLoaded = (char) => {
     this.setState({ char, loading: false, error: false });
@@ -72,10 +72,13 @@ class RandomChar extends Component {
 
 const View = ({ char }) => {
   const { name, description, thumbnail, homepage, wiki } = char;
+  const pathArr = thumbnail.split('/');
+  const style =
+    pathArr[pathArr.length - 1] === 'image_not_available.jpg' ? { objectFit: 'contain' } : null;
 
   return (
     <div className='randomchar__block'>
-      <img src={thumbnail} alt='Random character' className='randomchar__img' />
+      <img src={thumbnail} style={style} alt='Random character' className='randomchar__img' />
       <div className='randomchar__info'>
         <p className='randomchar__name'>{name}</p>
         <p className='randomchar__descr'>{description}</p>
