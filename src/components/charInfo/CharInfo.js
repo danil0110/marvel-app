@@ -1,7 +1,6 @@
 import { Component } from 'react';
 
 import './charInfo.scss';
-import thor from '../../resources/img/thor.jpeg';
 
 import MarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -72,8 +71,7 @@ class CharInfo extends Component {
 }
 
 const View = ({ char }) => {
-  const { name, description, thumbnail, homepage, wiki } = char;
-  let { comics } = char;
+  const { name, description, thumbnail, homepage, wiki, comics } = char;
   const pathArr = char.thumbnail.split('/');
   const imgStyle =
     pathArr[pathArr.length - 1] === 'image_not_available.jpg' ? { objectFit: 'fill' } : null;
@@ -93,7 +91,7 @@ const View = ({ char }) => {
   };
 
   const noComicsText = !comics.length ? 'There are no comics with this character.' : null;
-  comics = comics.length > 10 ? comics.slice(0, 10) : comics;
+  const transformedComics = comics.slice(0, 10);
 
   return (
     <>
@@ -114,7 +112,7 @@ const View = ({ char }) => {
       <div className='char__descr'>{description}</div>
       <div className='char__comics'>Comics:</div>
       {noComicsText}
-      {buildComicsList(comics)}
+      {buildComicsList(transformedComics)}
     </>
   );
 };
