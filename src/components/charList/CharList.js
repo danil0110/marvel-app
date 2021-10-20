@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import './charList.scss';
@@ -17,6 +17,8 @@ class CharList extends Component {
   };
 
   marvelService = new MarvelService();
+
+  itemRefs = [];
 
   componentDidMount() {
     this.onRequest();
@@ -60,6 +62,15 @@ class CharList extends Component {
     this.state({ loading: false, error: true });
   };
 
+  setItemRef = (ref) => {
+    this.itemRefs.push(ref);
+  };
+
+  onFocusItem = (id) => {
+    this.itemRefs.forEach((item) => item.classList.remove('char__item_selected'));
+    this.itemRefs[id].classList.add('char__item_selected');
+  };
+
   renderItems = () => {
     const { charList, newItemsLoading, offset, isEnd } = this.state;
     const { onCharSelected } = this.props;
@@ -67,7 +78,7 @@ class CharList extends Component {
     return (
       <>
         <ul className='char__grid'>
-          {charList.map((item) => {
+          {charList.map((item, i) => {
             const pathArr = item.thumbnail.split('/');
             const imgStyle =
               pathArr[pathArr.length - 1] === 'image_not_available.jpg'
@@ -75,7 +86,22 @@ class CharList extends Component {
                 : null;
 
             return (
-              <li className='char__item' key={item.id} onClick={() => onCharSelected(item.id)}>
+              <li
+                ref={this.setItemRef}
+                tabIndex={0}
+                className='char__item'
+                key={item.id}
+                onClick={() => {
+                  onCharSelected(item.id);
+                  this.onFocusItem(i);
+                }}
+                onKeyPress={(e) => {
+                  if (e.key === ' ' || e.key === 'Enter') {
+                    onCharSelected(item.id);
+                    this.onFocusItem(i);
+                  }
+                }}
+              >
                 <img style={imgStyle} src={item.thumbnail} alt={item.name} />
                 <div className='char__name'>{item.name}</div>
               </li>
