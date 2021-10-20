@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import './charList.scss';
 import Spinner from '../spinner/Spinner';
@@ -97,10 +98,7 @@ class CharList extends Component {
     const { loading, error } = this.state;
     const spinner = loading ? <Spinner /> : null;
     const errorMessage = error ? <ErrorMessage /> : null;
-    const content = !(loading || errorMessage)
-      ? // <View charList={charList} onCharSelected={this.props.onCharSelected} />
-        this.renderItems()
-      : null;
+    const content = !(loading || errorMessage) ? this.renderItems() : null;
 
     return (
       <div className='char__list'>
@@ -112,34 +110,8 @@ class CharList extends Component {
   }
 }
 
-// const View = ({ charList, onCharSelected }) => {
-//   return (
-//     <>
-//       <ul className='char__grid'>
-//         {charList.map((item) => {
-//           const pathArr = item.thumbnail.split('/');
-//           const imgStyle =
-//             pathArr[pathArr.length - 1] === 'image_not_available.jpg'
-//               ? { objectFit: 'fill' }
-//               : null;
-
-//           return (
-//             <li className='char__item' key={item.id} onClick={() => onCharSelected(item.id)}>
-//               <img style={imgStyle} src={item.thumbnail} alt={item.name} />
-//               <div className='char__name'>{item.name}</div>
-//             </li>
-//           );
-//         })}
-//       </ul>
-//       <button
-//         className='button button__main button__long'
-//         disabled={newItemsLoading}
-//         onClick={() => this.onRequest(offset)}
-//       >
-//         <div className='inner'>load more</div>
-//       </button>
-//     </>
-//   );
-// };
+CharList.propTypes = {
+  onCharSelected: PropTypes.func.isRequired,
+};
 
 export default CharList;
