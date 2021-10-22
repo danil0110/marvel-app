@@ -9,7 +9,7 @@ import MarvelService from '../../services/MarvelService';
 const CharList = (props) => {
   const [charList, setCharList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [newItemsLoading, setNewItemsLoading] = useState(false);
+  const [newItemsLoading, setNewItemsLoading] = useState(true);
   const [error, setError] = useState(false);
   const [offset, setOffset] = useState(210);
   const [isEnd, setIsEnd] = useState(false);
@@ -17,23 +17,29 @@ const CharList = (props) => {
   const marvelService = new MarvelService();
 
   useEffect(() => {
-    onRequest();
-    // TODO: Implement onScroll charaters fetching with hooks
-    // const onScroll = (event) => {
-    //   if (
-    //     window.innerHeight + window.pageYOffset >= document.body.offsetHeight &&
-    //     !newItemsLoading
-    //   ) {
-    //     onRequest();
-    //   }
-    // };
-    // window.addEventListener('scroll', onScroll);
-    // return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    if (newItemsLoading && !isEnd) {
+      onRequest();
+    }
+  }, [newItemsLoading]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  });
+
+  const onScroll = () => {
+    if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
+      setNewItemsLoading(true);
+    }
+  };
 
   const onRequest = () => {
     onCharactersLoading();
-    marvelService.getAllCharacters(offset).then(onCharactersLoaded).catch(onError);
+    marvelService
+      .getAllCharacters(offset)
+      .then(onCharactersLoaded)
+      .catch(onError)
+      .finally(() => setNewItemsLoading(false));
   };
 
   const onCharactersLoading = () => {
@@ -43,7 +49,6 @@ const CharList = (props) => {
   const onCharactersLoaded = (newCharList) => {
     setCharList((charList) => [...charList, ...newCharList]);
     setLoading(false);
-    setNewItemsLoading(false);
     setError(false);
     setOffset((offset) => offset + 9);
     setIsEnd(newCharList.length < 9 ? true : false);
@@ -68,11 +73,14 @@ const CharList = (props) => {
       <>
         <ul className='char__grid'>
           {charList.map((item, i) => {
-            const pathArr = item.thumbnail.split('/');
-            const imgStyle =
-              pathArr[pathArr.length - 1] === 'image_not_available.jpg'
-                ? { objectFit: 'fill' }
-                : null;
+            let pathArr, imgStyle;
+            if (item.thumbnail) {
+              pathArr = item.thumbnail.split('/');
+              imgStyle =
+                pathArr[pathArr.length - 1] === 'image_not_available.jpg'
+                  ? { objectFit: 'fill' }
+                  : null;
+            }
 
             return (
               <li
