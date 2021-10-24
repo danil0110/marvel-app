@@ -92,16 +92,6 @@ const CharList = (props) => {
             );
           })}
         </ul>
-        {!charList.length ? null : (
-          <button
-            className='button button__main button__long'
-            disabled={newItemsLoading}
-            onClick={() => setNewItemsLoading(true)}
-            style={{ display: isEnd ? 'none' : 'block' }}
-          >
-            <div className='inner'>load more</div>
-          </button>
-        )}
       </>
     );
   };
@@ -109,13 +99,22 @@ const CharList = (props) => {
   const spinner = initialLoading ? <Spinner /> : null;
   const errorMessage = error ? <ErrorMessage /> : null;
   const items = renderItems();
-  // const content = !(loading || errorMessage) ? renderItems() : null;
 
   return (
     <div className='char__list'>
       {spinner}
       {errorMessage}
       {items}
+      {!charList.length ? null : (
+        <button
+          className='button button__main button__long'
+          disabled={newItemsLoading}
+          onClick={() => setNewItemsLoading(true)}
+          style={{ display: isEnd ? 'none' : 'block' }}
+        >
+          <div className='inner'>load more</div>
+        </button>
+      )}
     </div>
   );
 };
