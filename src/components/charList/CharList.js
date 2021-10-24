@@ -4,17 +4,16 @@ import PropTypes from 'prop-types';
 import './charList.scss';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 
 const CharList = (props) => {
   const [charList, setCharList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [newItemsLoading, setNewItemsLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [offset, setOffset] = useState(210);
   const [isEnd, setIsEnd] = useState(false);
 
-  const marvelService = new MarvelService();
+  const { error, getAllCharacters } = useMarvelService();
 
   useEffect(() => {
     if (newItemsLoading && !isEnd) {
@@ -34,29 +33,17 @@ const CharList = (props) => {
   };
 
   const onRequest = () => {
-    onCharactersLoading();
-    marvelService
-      .getAllCharacters(offset)
+    initialLoading ? setNewItemsLoading(false) : setNewItemsLoading(true);
+    getAllCharacters(offset)
       .then(onCharactersLoaded)
-      .catch(onError)
       .finally(() => setNewItemsLoading(false));
   };
 
-  const onCharactersLoading = () => {
-    setNewItemsLoading(true);
-  };
-
   const onCharactersLoaded = (newCharList) => {
+    setInitialLoading(false);
     setCharList((charList) => [...charList, ...newCharList]);
-    setLoading(false);
-    setError(false);
     setOffset((offset) => offset + 9);
     setIsEnd(newCharList.length < 9 ? true : false);
-  };
-
-  const onError = () => {
-    setLoading(false);
-    setError(true);
   };
 
   const itemRefs = useRef([]);
@@ -105,27 +92,30 @@ const CharList = (props) => {
             );
           })}
         </ul>
-        <button
-          className='button button__main button__long'
-          disabled={newItemsLoading}
-          onClick={() => onRequest(offset)}
-          style={{ display: isEnd ? 'none' : 'block' }}
-        >
-          <div className='inner'>load more</div>
-        </button>
+        {!charList.length ? null : (
+          <button
+            className='button button__main button__long'
+            disabled={newItemsLoading}
+            onClick={() => setNewItemsLoading(true)}
+            style={{ display: isEnd ? 'none' : 'block' }}
+          >
+            <div className='inner'>load more</div>
+          </button>
+        )}
       </>
     );
   };
 
-  const spinner = loading ? <Spinner /> : null;
+  const spinner = initialLoading ? <Spinner /> : null;
   const errorMessage = error ? <ErrorMessage /> : null;
-  const content = !(loading || errorMessage) ? renderItems() : null;
+  const items = renderItems();
+  // const content = !(loading || errorMessage) ? renderItems() : null;
 
   return (
     <div className='char__list'>
       {spinner}
-      {error}
-      {content}
+      {errorMessage}
+      {items}
     </div>
   );
 };
