@@ -5,38 +5,22 @@ import mjolnir from '../../resources/img/mjolnir.png';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 
 const RandomChar = () => {
   const [char, setChar] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  const marvelService = new MarvelService();
+  const { loading, error, getCharacter, clearError } = useMarvelService();
 
   useEffect(() => {
     updateChar();
   }, []);
 
-  const onCharLoading = () => {
-    setLoading(true);
-  };
-
-  const onCharLoaded = (char) => {
-    setChar(char);
-    setLoading(false);
-    setError(false);
-  };
-
-  const onError = () => {
-    setLoading(false);
-    setError(true);
-  };
+  const onCharLoaded = (char) => setChar(char);
 
   const updateChar = () => {
-    onCharLoading();
+    clearError();
     const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-    marvelService.getCharacter(id).then(onCharLoaded).catch(onError);
+    getCharacter(id).then(onCharLoaded);
   };
 
   const errorMessage = error ? <ErrorMessage /> : null;
@@ -66,9 +50,12 @@ const RandomChar = () => {
 
 const View = ({ char }) => {
   const { name, description, thumbnail, homepage, wiki } = char;
-  const pathArr = thumbnail.split('/');
-  const imgStyle =
-    pathArr[pathArr.length - 1] === 'image_not_available.jpg' ? { objectFit: 'contain' } : null;
+  let pathArr, imgStyle;
+  if (thumbnail) {
+    pathArr = thumbnail.split('/');
+    imgStyle =
+      pathArr[pathArr.length - 1] === 'image_not_available.jpg' ? { objectFit: 'contain' } : null;
+  }
 
   return (
     <div className='randomchar__block'>
