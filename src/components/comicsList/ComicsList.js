@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import './comicsList.scss';
 import Spinner from '../spinner/Spinner';
@@ -40,7 +41,6 @@ const ComicsList = () => {
   };
 
   const onComicsLoaded = (newComicsList) => {
-    console.log(newComicsList);
     setInitialLoading(false);
     setComicsList((comicsList) => [...comicsList, ...newComicsList]);
     setOffset((offset) => offset + 8);
@@ -50,15 +50,16 @@ const ComicsList = () => {
   const renderItems = () => {
     return (
       <ul className='comics__grid'>
-        {comicsList.map((item) => {
-          const { id, title, price, thumbnail, url } = item;
+        {comicsList.map((item, i) => {
+          const { id, title, price, thumbnail } = item;
           return (
-            <li className='comics__item' key={id}>
-              <a href={url}>
+            // // key={i} because MarvelAPI sometimes gives items with the same ID
+            <li className='comics__item' key={i}>
+              <Link to={`/comics/${id}`}>
                 <img src={thumbnail} alt={title} className='comics__item-img' />
                 <div className='comics__item-name'>{title}</div>
                 <div className='comics__item-price'>{price}</div>
-              </a>
+              </Link>
             </li>
           );
         })}
@@ -69,7 +70,6 @@ const ComicsList = () => {
   const spinner = initialLoading ? <Spinner /> : null;
   const errorMessage = error ? <ErrorMessage /> : null;
   const items = renderItems();
-  console.log('State list: ', comicsList);
 
   return (
     <div className='comics__list'>
