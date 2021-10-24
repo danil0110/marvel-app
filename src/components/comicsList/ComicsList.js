@@ -53,7 +53,7 @@ const ComicsList = () => {
         {comicsList.map((item, i) => {
           const { id, title, price, thumbnail } = item;
           return (
-            // // key={i} because MarvelAPI sometimes gives items with the same ID
+            // key={i} because MarvelAPI sometimes gives items with the same ID
             <li className='comics__item' key={i}>
               <Link to={`/comics/${id}`}>
                 <img src={thumbnail} alt={title} className='comics__item-img' />

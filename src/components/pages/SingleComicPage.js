@@ -6,7 +6,6 @@ import Spinner from '../spinner/Spinner';
 
 import useMarvelService from '../../services/MarvelService';
 import './singleComicPage.scss';
-import xMen from '../../resources/img/x-men.png';
 
 const SingleComicPage = () => {
   const { comicId } = useParams();

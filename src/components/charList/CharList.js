@@ -74,7 +74,8 @@ const CharList = (props) => {
                 ref={(el) => (itemRefs.current[i] = el)}
                 tabIndex={0}
                 className='char__item'
-                key={item.id}
+                // key={i} because MarvelAPI sometimes gives items with the same ID
+                key={i}
                 onClick={() => {
                   onCharSelected(item.id);
                   onFocusItem(i);
