@@ -19,7 +19,7 @@ const AppHeader = () => {
           </li>
           /
           <li>
-            <NavLink exact activeClassName='active' to='/comics'>
+            <NavLink activeClassName='active' to='/comics'>
               Comics
             </NavLink>
           </li>
