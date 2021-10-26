@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import PropTypes from 'prop-types';
 
 import './charList.scss';
@@ -59,39 +60,43 @@ const CharList = (props) => {
     return (
       <>
         <ul className='char__grid'>
-          {charList.map((item, i) => {
-            let pathArr, imgStyle;
-            if (item.thumbnail) {
-              pathArr = item.thumbnail.split('/');
-              imgStyle =
-                pathArr[pathArr.length - 1] === 'image_not_available.jpg'
-                  ? { objectFit: 'fill' }
-                  : null;
-            }
+          <TransitionGroup component={null}>
+            {charList.map((item, i) => {
+              let pathArr, imgStyle;
+              if (item.thumbnail) {
+                pathArr = item.thumbnail.split('/');
+                imgStyle =
+                  pathArr[pathArr.length - 1] === 'image_not_available.jpg'
+                    ? { objectFit: 'fill' }
+                    : null;
+              }
 
-            return (
-              <li
-                ref={(el) => (itemRefs.current[i] = el)}
-                tabIndex={0}
-                className='char__item'
-                // key={i} because MarvelAPI sometimes gives items with the same ID
-                key={i}
-                onClick={() => {
-                  onCharSelected(item.id);
-                  onFocusItem(i);
-                }}
-                onKeyPress={(e) => {
-                  if (e.key === ' ' || e.key === 'Enter') {
-                    onCharSelected(item.id);
-                    onFocusItem(i);
-                  }
-                }}
-              >
-                <img style={imgStyle} src={item.thumbnail} alt={item.name} />
-                <div className='char__name'>{item.name}</div>
-              </li>
-            );
-          })}
+              return (
+                <CSSTransition timeout={300} classNames='char__item' mountOnEnter unmountOnExit>
+                  <li
+                    ref={(el) => (itemRefs.current[i] = el)}
+                    tabIndex={0}
+                    className='char__item'
+                    // key={i} because MarvelAPI sometimes gives items with the same ID
+                    key={i}
+                    onClick={() => {
+                      onCharSelected(item.id);
+                      onFocusItem(i);
+                    }}
+                    onKeyPress={(e) => {
+                      if (e.key === ' ' || e.key === 'Enter') {
+                        onCharSelected(item.id);
+                        onFocusItem(i);
+                      }
+                    }}
+                  >
+                    <img style={imgStyle} src={item.thumbnail} alt={item.name} />
+                    <div className='char__name'>{item.name}</div>
+                  </li>
+                </CSSTransition>
+              );
+            })}
+          </TransitionGroup>
         </ul>
       </>
     );

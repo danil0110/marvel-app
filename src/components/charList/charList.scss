@@ -22,6 +22,28 @@
     padding: 15px;
     cursor: pointer;
     transition: 0.3s transform;
+    &-enter {
+      opacity: 0;
+      transform: translateY(-20px);
+      &-active {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.3s, transform 0.3s;
+      }
+      &-done {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    &-exit {
+      opacity: 1;
+      transform: translateY(0);
+      &-active {
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: opacity 0.3s, transform 0.3s;
+      }
+    }
     img {
       width: 200px;
       height: 200px;
