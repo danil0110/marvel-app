@@ -83,16 +83,9 @@ const ComicsList = () => {
     );
   };
 
-  // const spinner = initialLoading ? <Spinner /> : null;
-  // const errorMessage = error ? <ErrorMessage /> : null;
-  // const items = renderItems();
-
   return (
     <div className='comics__list'>
       {setContent(process, () => renderItems(), newItemsLoading)}
-      {/* {spinner}
-      {errorMessage}
-      {items} */}
       {!comicsList.length ? null : (
         <button
           className='button button__main button__long'
