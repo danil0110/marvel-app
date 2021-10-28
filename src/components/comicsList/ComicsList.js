@@ -1,20 +1,35 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import './comicsList.scss';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
-
 import useMarvelService from '../../services/MarvelService';
+
+import './comicsList.scss';
+
+const setContent = (process, Component, newItemLoading) => {
+  switch (process) {
+    case 'waiting':
+      return <Spinner />;
+    case 'loading':
+      return newItemLoading ? <Component /> : <Spinner />;
+    case 'confirmed':
+      return <Component />;
+    case 'error':
+      return <ErrorMessage />;
+    default:
+      throw new Error('Unexpected process state');
+  }
+};
 
 const ComicsList = () => {
   const [comicsList, setComicsList] = useState([]);
   const [initialLoading, setInitialLoading] = useState(true);
   const [newItemsLoading, setNewItemsLoading] = useState(true);
-  const [offset, setOffset] = useState(500);
+  const [offset, setOffset] = useState(100);
   const [isEnd, setIsEnd] = useState(false);
 
-  const { error, getAllComics } = useMarvelService();
+  const { getAllComics, process, setProcess } = useMarvelService();
 
   useEffect(() => {
     if (newItemsLoading && !isEnd) {
@@ -37,6 +52,7 @@ const ComicsList = () => {
     initialLoading ? setNewItemsLoading(false) : setNewItemsLoading(true);
     getAllComics(offset)
       .then(onComicsLoaded)
+      .then(() => setProcess('confirmed'))
       .finally(() => setNewItemsLoading(false));
   };
 
@@ -67,15 +83,16 @@ const ComicsList = () => {
     );
   };
 
-  const spinner = initialLoading ? <Spinner /> : null;
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const items = renderItems();
+  // const spinner = initialLoading ? <Spinner /> : null;
+  // const errorMessage = error ? <ErrorMessage /> : null;
+  // const items = renderItems();
 
   return (
     <div className='comics__list'>
-      {spinner}
+      {setContent(process, () => renderItems(), newItemsLoading)}
+      {/* {spinner}
       {errorMessage}
-      {items}
+      {items} */}
       {!comicsList.length ? null : (
         <button
           className='button button__main button__long'
