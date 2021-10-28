@@ -1,8 +1,10 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 
 import './appHeader.scss';
 
 const AppHeader = () => {
+  const { pathname } = useLocation();
+
   return (
     <header className='app__header'>
       <h1 className='app__title'>
@@ -13,7 +15,7 @@ const AppHeader = () => {
       <nav className='app__menu'>
         <ul>
           <li>
-            <NavLink exact activeClassName='active' to='/'>
+            <NavLink isActive={() => pathname !== '/comics'} activeClassName='active' to='/'>
               Characters
             </NavLink>
           </li>

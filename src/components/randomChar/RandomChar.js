@@ -62,7 +62,9 @@ const View = ({ char }) => {
       <img src={thumbnail} style={imgStyle} alt='Random character' className='randomchar__img' />
       <div className='randomchar__info'>
         <p className='randomchar__name'>{name}</p>
-        <p className='randomchar__descr'>{description}</p>
+        <p className='randomchar__descr'>
+          {description?.length > 210 ? description.slice(0, 210) + '...' : description}
+        </p>
         <div className='randomchar__btns'>
           <a href={homepage} className='button button__main' target='_blank' rel='noreferrer'>
             <div className='inner'>homepage</div>
