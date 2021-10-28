@@ -15,7 +15,6 @@ const SearchChar = () => {
   const onCharLoaded = (char) => {
     setChar(char);
     setIsInitial(false);
-    console.log(char);
   };
 
   const searchChar = async (name) => {
@@ -49,17 +48,17 @@ const SearchChar = () => {
             <div className='inner'>find</div>
           </button>
           {spinner}
-          {loading || isInitial ? null : !char ? (
-            <div className='error wide'>
-              The character was not found. Check the name and try again.
-            </div>
-          ) : (
+          {loading || isInitial ? null : char ? (
             <>
               <div className='success'>There is! Visit {char.name} page?</div>
               <Link className='button button__secondary' to={`/characters/${char.id}`}>
                 <div className='inner'>Visit</div>
               </Link>
             </>
+          ) : (
+            <div className='error wide'>
+              The character was not found. Check the name and try again.
+            </div>
           )}
           <ErrorMessage name='name' className='message error wide' component='div' />
         </div>
