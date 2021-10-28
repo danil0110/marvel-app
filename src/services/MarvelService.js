@@ -3,7 +3,7 @@ import useHttp from '../hooks/http.hook';
 const useMarvelService = () => {
   const { request, clearError, process, setProcess } = useHttp();
   const _apiBase = 'https://gateway.marvel.com:443/v1/public';
-  const _apiKey = `apikey=${process.env.REACT_APP_MARVEL_API_KEY}`;
+  const _apiKey = 'apikey=343bde20395d8945842f78968fe79b31';
   const _baseCharactersOffset = 210;
   const _baseComicsOffset = 100;
 
