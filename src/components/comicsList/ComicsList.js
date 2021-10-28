@@ -35,6 +35,7 @@ const ComicsList = () => {
     if (newItemsLoading && !isEnd) {
       onRequest();
     }
+    // eslint-disable-next-line
   }, [newItemsLoading]);
 
   useEffect(() => {

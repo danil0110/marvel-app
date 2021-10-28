@@ -1,7 +1,7 @@
 import useHttp from '../hooks/http.hook';
 
 const useMarvelService = () => {
-  const { loading, request, error, clearError, process, setProcess } = useHttp();
+  const { request, clearError, process, setProcess } = useHttp();
   const _apiBase = 'https://gateway.marvel.com:443/v1/public';
   const _apiKey = `apikey=${process.env.REACT_APP_MARVEL_API_KEY}`;
   const _baseCharactersOffset = 210;
@@ -62,15 +62,11 @@ const useMarvelService = () => {
         : 'NOT AVAILABLE',
       thumbnail: comic.thumbnail.path + '.' + comic.thumbnail.extension,
       pageCount: comic.pageCount ? comic.pageCount : 'No information about the number of pages.',
-      language: comic.textObjects.language
-        ? comic.textObjects.language
-        : 'no information about the language.',
+      language: comic.textObjects.language ? comic.textObjects.language : 'en-us.',
     };
   };
 
   return {
-    loading,
-    error,
     clearError,
     process,
     setProcess,

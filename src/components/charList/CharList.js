@@ -29,12 +29,13 @@ const CharList = (props) => {
   const [offset, setOffset] = useState(210);
   const [isEnd, setIsEnd] = useState(false);
 
-  const { error, getAllCharacters, process, setProcess } = useMarvelService();
+  const { getAllCharacters, process, setProcess } = useMarvelService();
 
   useEffect(() => {
     if (newItemsLoading && !isEnd) {
       onRequest();
     }
+    // eslint-disable-next-line
   }, [newItemsLoading]);
 
   useEffect(() => {
@@ -120,6 +121,7 @@ const CharList = (props) => {
 
   const elements = useMemo(() => {
     return setContent(process, () => renderItems(), newItemsLoading);
+    // eslint-disable-next-line
   }, [process]);
 
   return (
