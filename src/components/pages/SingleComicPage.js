@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
@@ -42,6 +43,10 @@ const View = ({ comic }) => {
 
   return (
     <>
+      <Helmet>
+        <meta name='description' content={`${title} comics book`} />
+        <title>{title}</title>
+      </Helmet>
       <AppBanner />
       <div className='single-comic'>
         <img src={thumbnail} alt={title} className='single-comic__img' />
