@@ -7,6 +7,21 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import useMarvelService from '../../services/MarvelService';
 
+const setContent = (process, Component, newItemLoading) => {
+  switch (process) {
+    case 'waiting':
+      return <Spinner />;
+    case 'loading':
+      return newItemLoading ? <Component /> : <Spinner />;
+    case 'confirmed':
+      return <Component />;
+    case 'error':
+      return <ErrorMessage />;
+    default:
+      throw new Error('Unexpected process state');
+  }
+};
+
 const CharList = (props) => {
   const [charList, setCharList] = useState([]);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -14,7 +29,7 @@ const CharList = (props) => {
   const [offset, setOffset] = useState(210);
   const [isEnd, setIsEnd] = useState(false);
 
-  const { error, getAllCharacters } = useMarvelService();
+  const { error, getAllCharacters, process, setProcess } = useMarvelService();
 
   useEffect(() => {
     if (newItemsLoading && !isEnd) {
@@ -37,6 +52,7 @@ const CharList = (props) => {
     initialLoading ? setNewItemsLoading(false) : setNewItemsLoading(true);
     getAllCharacters(offset)
       .then(onCharactersLoaded)
+      .then(() => setProcess('confirmed'))
       .finally(() => setNewItemsLoading(false));
   };
 
@@ -102,15 +118,9 @@ const CharList = (props) => {
     );
   };
 
-  const spinner = initialLoading ? <Spinner /> : null;
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const items = renderItems();
-
   return (
     <div className='char__list'>
-      {spinner}
-      {errorMessage}
-      {items}
+      {setContent(process, () => renderItems(), newItemsLoading)}
       {!charList.length ? null : (
         <button
           className='button button__main button__long'
