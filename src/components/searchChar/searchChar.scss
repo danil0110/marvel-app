@@ -27,15 +27,15 @@
 
     input {
       border: none;
-      outline: solid 0 $main-color;
+      outline: none;
       width: 250px;
       padding: 10px;
       font-size: 14px;
       box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);
-      transition: outline 0.3s;
+      transition: filter 0.25s;
 
       &:focus {
-        outline-width: 2px;
+        filter: drop-shadow(0 0 2px $main-color);
       }
     }
   }
